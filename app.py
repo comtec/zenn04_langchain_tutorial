@@ -5,7 +5,10 @@ from langchain.schema import (SystemMessage, HumanMessage, AIMessage)
 api_key= st.secrets.OpenAIAPI.openai_api_key
 
 def main():
-    llm = ChatOpenAI(openai_api_key=api_key, temperature=0)
+    init_page()
+    llm = select_model()
+    init_messages()
+    #llm = ChatOpenAI(openai_api_key=api_key, temperature=0)
 
     st.set_page_config(
           page_title="My Great ChatGPT",
@@ -34,10 +37,10 @@ def main():
         st.sidebar.markdown(f"- ${i+0.01}")  # 説明のためのダミー
 
     # チャット履歴の初期化
-    if "messages" not in st.session_state:
-        st.session_state.messages = [
-            SystemMessage(content="You are a helpful assistant.")
-        ]
+    #if "messages" not in st.session_state:
+       #st.session_state.messages = [
+            #SystemMessage(content="You are a helpful assistant.")
+        #]
 
     # ユーザーの入力を監視
     if user_input := st.chat_input("聞きたいことを入力してね！"):
@@ -58,6 +61,20 @@ def main():
         else:  # isinstance(message, SystemMessage):
             st.write(f"System message: {message.content}")
 
+def select_model():
+    # サイドバーにスライダーを追加し、temperatureを0から2までの範囲で選択可能にする
+    # 初期値は0.0、刻み幅は0.1とする
+    temperature = st.sidebar.slider("Temperature:", min_value=0.0, max_value=2.0, value=0.0, step=0.01)
+
+    return ChatOpenAI(openai_api_key=api_key, temperature=temperature)
+
+def init_messages():
+    clear_button = st.sidebar.button("Clear Conversation", key="clear")
+    if clear_button or "messages" not in st.session_state:
+        st.session_state.messages = [
+            SystemMessage(content="You are a helpful assistant.")
+        ]
+        st.session_state.costs = []
 
 if __name__ == '__main__':
     main()
