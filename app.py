@@ -25,11 +25,8 @@ def main():
           user_input = st.text_area(label='Message: ', key='input', height=100)
           submit_button = st.form_submit_button(label='Send')
 
+    # 何か入力されて Submit ボタンが押されたら実行される
     if submit_button and user_input:
-        # 何か入力されて Submit ボタンが押されたら実行される
-
-    # ユーザーの入力を監視
-    if user_input
         st.session_state.messages.append(HumanMessage(content=user_input))
         with st.spinner("ChatGPT is typing ..."):
             response = llm(st.session_state.messages)
